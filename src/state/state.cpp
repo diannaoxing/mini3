@@ -11,9 +11,43 @@
  * 
  * @return int 
  */
-int State::evaluate(){
-  // [TODO] design your own evaluation function
-  return 0;
+int State::evaluate(Move move){ // [TODO] design your own evaluation function
+  int self_value = 0, oppn_value = 0;
+  Board next = this->board;
+
+  Point from = move.first, to = move.second;
+  int8_t moved = next.board[this->player][from.first][from.second];
+
+  // promotion for pawn
+  if(moved == 1 && (to.first == BOARD_H - 1) || to.first == 0){
+    self_value += 8;
+  }
+  // eat the opponent's chess
+  int8_t eaten = next.board[1-this->player][to.first][to.second];
+  if(eaten){
+    switch (eaten){
+      case 1: //pawn
+        oppn_value -= 1;
+        break;
+      case 2: //rook
+        oppn_value -= 5;
+        break;
+      case 3: //knigh
+        oppn_value -= 3;
+        break;
+      case 4: //bishop
+        oppn_value -= 5;
+        break;
+      case 5: //queen
+        oppn_value -= 9;
+        break;
+      case 6: //king
+        oppn_value -= 10000;
+        break;
+    }
+  }
+  
+  return (self_value - oppn_value);
 }
 
 

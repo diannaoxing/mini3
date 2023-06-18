@@ -17,7 +17,7 @@
 
 /*State*/
 typedef std::pair<size_t, size_t> Point;
-typedef std::pair<Point, Point> Move;
+typedef std::pair<Point, Point> Move; // 第一個point紀錄from, 第二個point紀錄to
 class Board{
   public:
     char board[2][BOARD_H][BOARD_W] = {{
@@ -80,6 +80,7 @@ State* State::next_state(Move move){
   if(moved == 1 && (to.first==BOARD_H-1 || to.first==0)){
     moved = 5;
   }
+  // eat the opponent's chess
   if(next.board[1-this->player][to.first][to.second]){
     next.board[1-this->player][to.first][to.second] = 0;
   }
@@ -129,35 +130,13 @@ void State::get_legal_actions(){
   std::vector<Move> all_actions;
   auto self_board = this->board.board[this->player];
   auto oppn_board = this->board.board[1 - this->player];
-  int self_value = 0, oppn_value = 0; // count the material(子力)
-
-
+  
+  
   int now_piece, oppn_piece;
   for(int i=0; i<BOARD_H; i+=1){
     for(int j=0; j<BOARD_W; j+=1){
       if((now_piece=self_board[i][j])){
         // std::cout << this->player << "," << now_piece << ' ';
-        // count the self_value(considering material)
-        switch (now_piece){
-          case 1: //pawn
-            self_value += 1;
-            break;
-          case 2: //rook
-            self_value += 5;
-            break;
-          case 3: //knight
-            self_value += 3;
-            break;
-          case 4: //bishop
-            self_value += 5;
-            break;
-          case 5: //queen
-            self_value += 9;
-            break;
-          case 6: //king
-            self_value += 10000;
-            break;
-        }
 
         // get legal actions
         switch (now_piece){
@@ -275,29 +254,6 @@ void State::get_legal_actions(){
                 return;
               }
             }
-            break;
-        }
-      }
-      if((oppn_piece=oppn_board[i][j])){
-        // count the oppn_value(considering material)
-        switch (oppn_piece){
-          case 1: //pawn
-            oppn_value += 1;
-            break;
-          case 2: //rook
-            oppn_value += 5;
-            break;
-          case 3: //knight
-            oppn_value += 3;
-            break;
-          case 4: //bishop
-            oppn_value += 5;
-            break;
-          case 5: //queen
-            oppn_value += 9;
-            break;
-          case 6: //king
-            oppn_value += 10000;
             break;
         }
       }
