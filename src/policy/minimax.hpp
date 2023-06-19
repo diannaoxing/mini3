@@ -9,4 +9,7 @@
 class Minimax{
 public:
   static Move get_move(State *state, int depth);
+  //
 };
+
+int minimax_search(State* state, int depth, bool maximizingPlayer);
