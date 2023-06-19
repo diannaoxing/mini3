@@ -4,50 +4,52 @@
 
 #include "./state.hpp"
 #include "../config.hpp"
+#define INT_MAX  2147483647
+#define INT_MIN -2147483648
 
+int chess_value[7] = {0, 1, 3, 3, 5, 9, 10000};
 
 /**
- * @brief evaluate the state
+ * @brief evaluate player's value of every state(including AI opponent's state)
  * 
  * @return int 
  */
-int State::evaluate(Move move){ // [TODO] design your own evaluation function
+int State::evaluate(Move move, bool isplayer){ // [TODO] design your own evaluation function
   int self_value = 0, oppn_value = 0;
   Board next = this->board;
 
   Point from = move.first, to = move.second;
   int8_t moved = next.board[this->player][from.first][from.second];
 
-  // promotion for pawn
-  if(moved == 1 && (to.first == BOARD_H - 1) || to.first == 0){
-    self_value += 8;
+  // look through the board
+  for(int i = 0; i < BOARD_H; i++){
+    for(int j = 0; j < BOARD_W; j++){
+      self_value += chess_value[next.board[this->player][from.first][from.second]];
+      oppn_value += chess_value[next.board[1 - this->player][from.first][from.second]];
+    }
   }
+  // promotion for pawn
+  if(moved == 1 && (to.first == BOARD_H - 1 || to.first == 0))  self_value += 8;
   // eat the opponent's chess
   int8_t eaten = next.board[1-this->player][to.first][to.second];
   if(eaten){
     switch (eaten){
       case 1: //pawn
-        oppn_value -= 1;
-        break;
       case 2: //rook
-        oppn_value -= 5;
-        break;
-      case 3: //knigh
-        oppn_value -= 3;
-        break;
+      case 3: //knight
       case 4: //bishop
-        oppn_value -= 5;
-        break;
       case 5: //queen
-        oppn_value -= 9;
+        oppn_value -= chess_value[eaten];
         break;
-      case 6: //king
-        oppn_value -= 10000;
+      case 6: //king -> WIN!!!!!!
+        return INT_MAX;
         break;
     }
   }
   
-  return (self_value - oppn_value);
+  int ret = self_value - oppn_value;
+  if(isplayer)  return ret;
+  else  return -ret;
 }
 
 
@@ -295,4 +297,14 @@ std::string State::encode_state(){
     ss << "\n";
   }
   return ss.str();
+}
+
+int max(int a, int b){
+  if(a > b) return a;
+  else  return b;
+}
+
+int min(int a, int b){
+  if(a < b) return a;
+  else return b;
 }

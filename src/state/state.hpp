@@ -54,11 +54,14 @@ class State{
     State(Board board): board(board){};
     State(Board board, int player): board(board), player(player){};
     
-    int evaluate(Move move);
+    int evaluate(Move move, bool isplayer);
     State* next_state(Move move);
     void get_legal_actions();
     std::string encode_output();
     std::string encode_state();
 };
+
+int max(int a, int b);
+int min(int a, int b);
 
 #endif
