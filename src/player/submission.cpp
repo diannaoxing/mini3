@@ -3,7 +3,7 @@
 
 #include "../config.hpp"
 #include "../state/state.hpp"
-#include "../policy/alphabeta.hpp"
+#include "../policy/submission.hpp"
 
 #define INT_MAX  2147483647
 #define INT_MIN -2147483648
@@ -46,11 +46,9 @@ void read_board(std::ifstream& fin) {
 void write_valid_spot(std::ofstream& fout) {
   // Keep updating the output until getting killed.
   int depth = 1;
-  initializeAB();
   
   while(true) {
-    int A = getA(), B = getB();
-    auto move = Alphabeta::get_move(root, A, B, depth);
+    auto move = Submission::get_move(root, depth);
     fout << move.first.first << " " << move.first.second << " "\
          << move.second.first << " " << move.second.second << std::endl;
     // Remember to flush the output to ensure the last action is written to file.

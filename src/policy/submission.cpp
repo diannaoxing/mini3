@@ -1,10 +1,12 @@
 #include <cstdlib>
 #include "../state/state.hpp"
-#include "./minimax.hpp"
+#include "./submission.hpp"
 
-#define MAX_DEPTH 2
 #define INT_MAX  2147483647
 #define INT_MIN -2147483648
+
+int best_A, best_B;
+
 /**
  * @brief get the best action
  * 
@@ -12,15 +14,17 @@
  * @param depth You may need this for other policy
  * @return Move 
  */
-Move Minimax::get_move(State *state, int depth){ 
+
+
+Move Submission::get_move(State *state, int depth){
   if(!state->legal_actions.size())
     state->get_legal_actions();
 
-  // todo: use minimax function to determine which action to choose
+  // todo: use alphbeta_search to determine which action to choose
   Move best_action;
   int tmp_value, best_value = INT_MIN;
   for(auto action = state->legal_actions.begin(); action != state->legal_actions.end(); action++){
-    tmp_value = minimax_search(state->next_state(*action), 1, false); // next state是opponent的state, 所以false
+    tmp_value = AB_search(state->next_state(*action), depth, INT_MIN, INT_MAX, false);
     if(tmp_value > best_value){
         best_action = *action;
         best_value = tmp_value;
@@ -29,28 +33,32 @@ Move Minimax::get_move(State *state, int depth){
   return best_action;
 }
 
-int minimax_search(State* state, int depth, bool maximizingPlayer){
+int AB_search(State* state, int depth, int A, int B, bool maximizingPlayer){
     
     int value;
     State* tmp;
-    if(depth == MAX_DEPTH)   return state->evaluate2(maximizingPlayer);
+    if(depth == 0)   return state->evaluate2(maximizingPlayer);
     
     if(maximizingPlayer){
         value = INT_MIN;
         state->get_legal_actions();
         for(auto action = state->legal_actions.begin(); action != state->legal_actions.end(); action++){
             tmp = state->next_state(*action);
-            value = max(value, minimax_search(tmp, depth + 1, false));    
+            value = max(value, AB_search(tmp, depth - 1, A, B, false));
+            A = max(A, value);
+            if(A >= B)  break;
         }
-      return value;
+    return value;
     }
     else{ // minizing player
         value = INT_MAX;
         state->get_legal_actions();
         for(auto action = state->legal_actions.begin(); action != state->legal_actions.end(); action++){
             tmp = state->next_state(*action);
-            value = min(value, minimax_search(tmp, depth + 1, true));
-        }    
-      return value;
+            value = min(value, AB_search(tmp, depth - 1, A, B, true));
+            B = min(B, value);
+            if(B <= A)  break;
+        }
+    return value;
     }
 }

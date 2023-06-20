@@ -2,10 +2,10 @@
 #include "../state/state.hpp"
 #include "./alphabeta.hpp"
 
-// #define MAX_DEPTH 5
 #define INT_MAX  2147483647
 #define INT_MIN -2147483648
 
+int best_A, best_B;
 
 /**
  * @brief get the best action
@@ -15,8 +15,20 @@
  * @return Move 
  */
 
+void initializeAB(){
+    best_A = INT_MIN;
+    best_B = INT_MAX;
+}
 
-Move Alphabeta::get_move(State *state, int depth){
+int getA(){
+    return best_A;
+}
+
+int getB(){
+    return best_B;
+}
+
+Move Alphabeta::get_move(State *state, int A, int B, int depth){
   if(!state->legal_actions.size())
     state->get_legal_actions();
 
@@ -24,7 +36,7 @@ Move Alphabeta::get_move(State *state, int depth){
   Move best_action;
   int tmp_value, best_value = INT_MIN;
   for(auto action = state->legal_actions.begin(); action != state->legal_actions.end(); action++){
-    tmp_value = AB_search(state->next_state(*action), depth, INT_MIN, INT_MAX, false);
+    tmp_value = AB_search(state->next_state(*action), depth, A, B, false);
     if(tmp_value > best_value){
         best_action = *action;
         best_value = tmp_value;

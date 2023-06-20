@@ -7,7 +7,8 @@
 #define INT_MAX  2147483647
 #define INT_MIN -2147483648
 
-int chess_value[7] = {0, 1, 3, 3, 5, 9, 10000};
+// int chess_value[7] = {0, 1, 3, 3, 5, 9, 10000};
+int chess_value[7] = {0, 2, 5, 6, 7, 8, 10000};
 
 /**
  * @brief evaluate player's value of every state(including AI opponent's state)
