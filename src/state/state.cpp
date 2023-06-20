@@ -20,6 +20,8 @@ int State::evaluate(Move move, bool isplayer){ // [TODO] design your own evaluat
 
   Point from = move.first, to = move.second;
   int8_t moved = next.board[this->player][from.first][from.second];
+  next.board[this->player][from.first][from.second] = 0;
+  next.board[this->player][to.first][to.second] = moved;
 
   // look through the board
   for(int i = 0; i < BOARD_H; i++){
@@ -28,6 +30,14 @@ int State::evaluate(Move move, bool isplayer){ // [TODO] design your own evaluat
       oppn_value += chess_value[next.board[1 - this->player][from.first][from.second]];
     }
   }
+  // look through the battlefront (making more chess to step out)
+  /*
+  for(int i = BOARD_H - 1, int front = 0; front != 1; i--){
+    for(int j = 0; j < BOARD_W; j++){
+      if(next.board[this->player][from.first][from.second])
+    }
+  }
+  */
   // promotion for pawn
   if(moved == 1 && (to.first == BOARD_H - 1 || to.first == 0))  self_value += 8;
   // eat the opponent's chess
@@ -39,7 +49,7 @@ int State::evaluate(Move move, bool isplayer){ // [TODO] design your own evaluat
       case 3: //knight
       case 4: //bishop
       case 5: //queen
-        oppn_value -= chess_value[eaten];
+        oppn_value -= (chess_value[eaten] + 2);
         break;
       case 6: //king -> WIN!!!!!!
         return INT_MAX;

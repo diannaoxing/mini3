@@ -1,8 +1,8 @@
 #include <cstdlib>
 #include "../state/state.hpp"
-#include "./minimax.hpp"
+#include "./alphabeta.hpp"
 
-#define MAX_DEPTH 3
+#define MAX_DEPTH 5
 #define INT_MAX  2147483647
 #define INT_MIN -2147483648
 
@@ -16,15 +16,15 @@
  */
 
 
-Move Minimax::get_move(State *state, int depth){
+Move Alphabeta::get_move(State *state, int depth){
   if(!state->legal_actions.size())
     state->get_legal_actions();
 
-  // todo: use minimax function to determine which action to choose
+  // todo: use alphbeta_search to determine which action to choose
   Move best_action;
   int tmp_value, best_value = INT_MIN;
   for(auto action = state->legal_actions.begin(); action != state->legal_actions.end(); action++){
-    tmp_value = minimax_search(state->next_state(*action), 1, false);
+    tmp_value = AB_search(state->next_state(*action), 1, INT_MIN, INT_MAX, false);
     if(tmp_value > best_value){
         best_action = *action;
         best_value = tmp_value;
