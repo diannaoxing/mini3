@@ -36,9 +36,8 @@ Move Alphabeta::get_move(State *state, int depth){
 int AB_search(State* state, int depth, int A, int B, bool maximizingPlayer){
     
     int value;
-    Move doNothing = {{0,0} , {0,0}};
     State* tmp;
-    if(depth == 0)   return state->evaluate(doNothing, maximizingPlayer);
+    if(depth == 0)   return state->evaluate2(maximizingPlayer);
     
     if(maximizingPlayer){
         value = INT_MIN;

@@ -32,14 +32,17 @@ int State::evaluate(Move move, bool isplayer){ // [TODO] design your own evaluat
       oppn_value += chess_value[next.board[1 - this->player][from.first][from.second]];
     }
   }
-  // look through the battlefront (making more chess to step out)
+
+  self_value = /*5 **/ self_value + moved;
+
   /*
+  // look through the battlefront (making more chess to step out)
   for(int i = BOARD_H - 1, int front = 0; front != 1; i--){
     for(int j = 0; j < BOARD_W; j++){
       if(next.board[this->player][from.first][from.second])
     }
   }
-  */
+  
   // eat the opponent's chess
   if(eaten){
     switch (eaten){
@@ -55,6 +58,50 @@ int State::evaluate(Move move, bool isplayer){ // [TODO] design your own evaluat
         break;
     }
   }
+  */
+  
+  int ret = self_value - oppn_value;
+  if(isplayer)  return ret;
+  else  return -ret;
+}
+
+int State::evaluate2(bool isplayer){ // [TODO] design your own evaluation function
+  
+  int self_value = 0, oppn_value = 0;
+  Board next = this->board;
+  
+  // look through the board
+  for(int i = 0; i < BOARD_H; i++){
+    for(int j = 0; j < BOARD_W; j++){
+      self_value += chess_value[next.board[this->player][i][j]];
+      oppn_value += chess_value[next.board[1 - this->player][i][j]];
+    }
+  }
+
+  /*
+  // look through the battlefront (making more chess to step out)
+  for(int i = BOARD_H - 1, int front = 0; front != 1; i--){
+    for(int j = 0; j < BOARD_W; j++){
+      if(next.board[this->player][from.first][from.second])
+    }
+  }
+  
+  // eat the opponent's chess
+  if(eaten){
+    switch (eaten){
+      case 1: //pawn
+      case 2: //rook
+      case 3: //knight
+      case 4: //bishop
+      case 5: //queen
+        oppn_value -= (chess_value[eaten] + 2);
+        break;
+      case 6: //king -> WIN!!!!!!
+        return INT_MAX;
+        break;
+    }
+  }
+  */
   
   int ret = self_value - oppn_value;
   if(isplayer)  return ret;
