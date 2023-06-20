@@ -2,7 +2,7 @@
 #include "../state/state.hpp"
 #include "./minimax.hpp"
 
-#define MAX_DEPTH 5
+#define MAX_DEPTH 2
 #define INT_MAX  2147483647
 #define INT_MIN -2147483648
 /**
@@ -33,13 +33,14 @@ int minimax_search(State* state, int depth, bool maximizingPlayer){
     
     int value;
     Move doNothing = {{1,1} , {1,1}};
-    if(depth == MAX_DEPTH/* || node is a terminal node*/)   return state->evaluate(doNothing, maximizingPlayer);
+    State* tmp;
+    if(depth == MAX_DEPTH)   return state->evaluate(doNothing, maximizingPlayer);
     
     if(maximizingPlayer){
         value = INT_MIN;
         state->get_legal_actions();
         for(auto action = state->legal_actions.begin(); action != state->legal_actions.end(); action++){
-            State* tmp = state->next_state(*action);
+            tmp = state->next_state(*action);
             value = max(value, minimax_search(tmp, depth + 1, false));    
         }
       return value;
@@ -48,7 +49,7 @@ int minimax_search(State* state, int depth, bool maximizingPlayer){
         value = INT_MAX;
         state->get_legal_actions();
         for(auto action = state->legal_actions.begin(); action != state->legal_actions.end(); action++){
-            State* tmp = state->next_state(*action);
+            tmp = state->next_state(*action);
             value = min(value, minimax_search(tmp, depth + 1, true));
         }    
       return value;

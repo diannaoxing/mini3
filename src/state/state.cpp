@@ -18,9 +18,11 @@ int State::evaluate(Move move, bool isplayer){ // [TODO] design your own evaluat
   int self_value = 0, oppn_value = 0;
   Board next = this->board;
 
+  // take action
   Point from = move.first, to = move.second;
   int8_t moved = next.board[this->player][from.first][from.second];
-  next.board[this->player][from.first][from.second] = 0;
+  int8_t eaten = next.board[1-this->player][to.first][to.second];
+  next.board[1-this->player][to.first][to.second] = next.board[this->player][from.first][from.second] = 0;
   next.board[this->player][to.first][to.second] = moved;
 
   // look through the board
@@ -38,10 +40,7 @@ int State::evaluate(Move move, bool isplayer){ // [TODO] design your own evaluat
     }
   }
   */
-  // promotion for pawn
-  if(moved == 1 && (to.first == BOARD_H - 1 || to.first == 0))  self_value += 8;
   // eat the opponent's chess
-  int8_t eaten = next.board[1-this->player][to.first][to.second];
   if(eaten){
     switch (eaten){
       case 1: //pawn
